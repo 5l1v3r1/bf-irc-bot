@@ -42,9 +42,9 @@ namespace netfuck
                     for (ushort i = (ushort)(pointer - 4); i < pointer + 5; i++)
                     {
                         if (pointer == i)
-                            Console.Write("[" + memory[i] + "]");
+                            Console.Write("[" + memory[i] + "] ");
                         else
-                            Console.Write(memory[i]);
+                            Console.Write(memory[i] + " ");
                     }
                     var command = "";
                     while (command != "continue")
@@ -76,6 +76,12 @@ namespace netfuck
                         break;
                     case '.':
                         stream.WriteByte(memory[pointer]);
+                        if (debug)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write(Encoding.ASCII.GetString(new[] { memory[pointer] }));
+                            Console.ResetColor();
+                        }
                         break;
                     case ',':
                         while (client.Available == 0) ;
@@ -126,6 +132,14 @@ namespace netfuck
                             inDebugger = true;
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("Breakpoint hit, entering debug mode.");
+                        }
+                        break;
+                    case '%':
+                        if (debug)
+                        {
+                            while (code[++codeIndex] != '%')
+                                Console.Write(code[codeIndex]);
+                            Console.WriteLine();
                         }
                         break;
                 }

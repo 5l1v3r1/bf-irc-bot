@@ -65,7 +65,7 @@ Send NICK and USER
     E  > +++++++++ .
     R  > ++ .
        > ++ .
-    b  > +++++++++ .
+    b  > ++++++++ .
     f  > ++ .
     b  > ++++++++ .
     o  > + .
@@ -90,56 +90,69 @@ cell #0: working cell for iteration and such
 cell #1 stdin (pointer currently points here)
 [
     Messages come in like this: ":user PRIVMSG bfbot :message"
-    >+[,<[-]++++++++++[>---<-]>--] Loop until a space (32) is read
+    [-]+[,<[-]++++++++++[>---<-]>--] Loop until a space (32) is read
+    
     Check for P (80)
     , < ++++++++++ [ > -------- <- ] [- set working cell to 1]+ >
     [ if (input != 'P')
         [ , ---------- ] Read to \n (10); also zeroes cell
         <->
     ]<[> if (input == 'P')
-        ,
-        Check for 'O' (73) PING
-        < ++++++++++ [>-------<-]>--- <working=1[-]+> Cell is zero if 'I'
+        , Check for 'I' (73) PING
+        < [-]++++++++++ [>-------<-]>--- <working=1+> Cell is zero if 'I'
         [
             Check for 'R' (82) PRIVMSG
-            NOT WORKING; WHY
-            --------- Subtract 9 more; cell is zero if 'R'
-            Use a second working cell at address 3: >[-]+<
+            --------- Subtract 9 more; cell is zero if 'R' <[-]+>
             [
                 Not 'R'
                 [ , ---------- ] Read to \n (10); also zeroes cell
-            >-<]>[ (move back to input address: <)
-                Handle 'R' (PRIVMSG)
-                Example PRIVMSG: :user PRIVMSG #channel :message
-                Example PRIVMSG: :user PRIVMSG destination :message
-                
+            <->]<[>
+                Handle PRIVMSG
                 Read remaining characters: I,V,M,S,G, ,
                 
-                Check for channel message (next character == '#' 35)
-                , >[-]++++++++++ [<--->-]<----- >[-]+<
+                Check for channel/user message ('#' = 35)
+                , <[-]++++++++++ [>---<-]>----- <[-]+>
                 [
-                    >> Move to new working memory
-                        Handle user private message
-                        Read until space (32): <[-]>[-]+[, <++++++++++ [>---<-]>-- ]
-                        , Read colon
-                        Command to join a channel is "J #channelname"; so check for a J (74)
-                        , <[-]++++++++++>[>-------<-]>---- <[-]+>
-                        [
-                            Not join; read to \n [ , ---------- ]
-                        >-<]>[
-                            Handle join command
-                            ,@
-                        ]<
-                    <<
-                >-<]>[<
-                    Handle channel message
-                    TEMPORARY: [ , ---------- ]
-                ]<
-            ]<
-        <->]<[>
+                    Handle user message
+                    Read to space: <[-]> [,<++++++++++[>---<-]>--],
+                    
+                    Check for 'J' 74
+                    ,<++++++++++[>-------<-]>---- <[-]+>
+                    [
+                        [-] (not J; ignore)
+                    <->]<[>,
+                        Write JOIN command 74 79 73 78 32 (user text) 13 10
+                        <[-]++++++++++
+                        >[-]>[-]>[-]>[-]>[-]<<<<<
+                        [>+++++++ >+++++++ >+++++++ >+++++++ >+++ <<<<<-]
+                        >++++.
+                        >+++++++++.
+                        >+++.
+                        >++++++++.
+                        >++.
+                        <<<<<[-]>
+                        
+                        Write user text:
+                        <[-]+[>
+                            ,------------- Subtract \r<[-]>
+                            [<+>+++++++++++++.[-]] Output if not \r
+                            <
+                        ]>
+                        Write \r\n
+                        [-]++++++++++.+++.
+                    <[-]]>
+                                        
+                    +[ , ---------- ] TODO
+                <[-]>]<[>
+                    Channel message
+                    %channel%
+                    [ , ---------- ] TODO
+                <[-]]>
+            <[-]]>
+        <[-]>]<[>
             Handle 'I' (PING)
-            
+            [ , ---------- ] TODO
         ]
-    ]
-    <[-]+ reset working cell to 1; loop
+    ]>[-]+
+    %***%
 ]
