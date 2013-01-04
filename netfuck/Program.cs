@@ -33,7 +33,7 @@ namespace netfuck
             bool inDebugger = false;
             while (codeIndex < code.Length)
             {
-                if (inDebugger)
+                if (inDebugger && "<>[]+-.,".Contains(code[codeIndex]))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Current instruction: " + code[codeIndex] + " (source index " + codeIndex + ")");
