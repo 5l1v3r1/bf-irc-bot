@@ -19,7 +19,7 @@ For example, to connect the bot to freenode, use this:
 
 Then, to get it into your favorite channel, use this from IRC:
 
-    /msg bfbot join #channelname
+    /msg bfbot J #channelname
 
 ## Included Programs
 
