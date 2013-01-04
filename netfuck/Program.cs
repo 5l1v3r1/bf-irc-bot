@@ -30,9 +30,37 @@ namespace netfuck
             var memory = new byte[ushort.MaxValue + 1];
             ushort pointer = 0;
             int codeIndex = 0;
+            bool inDebugger = false;
             while (codeIndex < code.Length)
             {
-                switch (code[codeIndex++])
+                if (inDebugger)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Current instruction: " + code[codeIndex] + " (source index " + codeIndex + ")");
+                    Console.WriteLine("Memory pointer: " + pointer);
+                    Console.Write("Memory dump: ");
+                    for (ushort i = (ushort)(pointer - 4); i < pointer + 5; i++)
+                    {
+                        if (pointer == i)
+                            Console.Write("[" + memory[i] + "]");
+                        else
+                            Console.Write(memory[i]);
+                    }
+                    var command = "";
+                    while (command != "continue")
+                    {
+                        Console.Write(">");
+                        command = Console.ReadLine();
+                        if (command.StartsWith("cell "))
+                            Console.WriteLine(memory[int.Parse(command.Substring(5))]);
+                        else if (command == "step")
+                            break;
+                        else if (command == "continue")
+                            inDebugger = false;
+                    }
+                    Console.ResetColor();
+                }
+                switch (code[codeIndex])
                 {
                     case '>':
                         pointer++;
@@ -57,26 +85,51 @@ namespace netfuck
                     case '[':
                         if (memory[pointer] == 0)
                         {
-                            codeIndex = code.IndexOf(']', codeIndex);
-                            if (codeIndex == -1)
+                            int depth = 0;
+                            while (depth >= 0)
                             {
-                                Console.WriteLine("Error: Hanging '['");
-                                return;
+                                codeIndex++;
+                                if (code[codeIndex] == '[') depth++;
+                                if (code[codeIndex] == ']') depth--;
+                                if (codeIndex >= code.Length)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine("ERROR: Hanging '['");
+                                    Console.ResetColor();
+                                    return;
+                                }
                             }
                         }
                         break;
                     case ']':
                         if (memory[pointer] != 0)
                         {
-                            codeIndex = code.Remove(codeIndex).LastIndexOf('[');
-                            if (codeIndex == -1)
+                            int depth = 0;
+                            while (depth >= 0)
                             {
-                                Console.WriteLine("Error: Hanging ']'");
-                                return;
+                                codeIndex--;
+                                if (code[codeIndex] == ']') depth++;
+                                if (code[codeIndex] == '[') depth--;
+                                if (codeIndex < 0)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine("ERROR: Hanging ']'");
+                                    Console.ResetColor();
+                                    return;
+                                }
                             }
                         }
                         break;
+                    case '@':
+                        if (debug)
+                        {
+                            inDebugger = true;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Breakpoint hit, entering debug mode.");
+                        }
+                        break;
                 }
+                codeIndex++;
             }
         }
 

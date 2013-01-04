@@ -85,4 +85,26 @@ Send NICK and USER
     \n > .
     <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< end of "NICK bfbot\r\nUSER bfbot a :bfbot\r\n"
 
-+[,]
+Loop until we get a PRIVMSG with a channel to join
+>
+cell #0: working cell for iteration and such
+cell #1 stdin (pointer currently points here)
+[
+    PRIVMSG comes in like this: ":user PRIVMSG bfbot :message"
+    >+[,<[-]++++++++++[>---<-]>--] Loop until a space (32) is read
+    Check for P (80)
+    , < ++++++++++ [ > -------- <- ] [- zero working cell to 1]+ >
+    [ if (input != 'P')
+        [ , ---------- ] Read to \n (10); also zeroes cell
+        <->
+    ]<[ if (input == 'P')>
+        TEMPORARY DEBUG CODE
+        (74 79 73 78 32 35 98 111 116 119 97 114 13 10)
+        ++++++++++
+        [>+++++++>+++++++>+++++++>+++++++>+++>+++>+++++++++>+++++++++++>+++++++++++>+++++++++++>+++++++++>+++++++++++>+>+<<<<<<<<<<<<<<-]
+        >++++.>+++++++++.>+++.>++++++++.>++.>+++++.>++++++++.>+.>++++++.>+++++++++.>+++++++.>++++.>+++.>.
+        [,[-]+]
+        END DEBUG CODE
+    ]
+    <[-]+ reset working cell to 1; loop
+]
