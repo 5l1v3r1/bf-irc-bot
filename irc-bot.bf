@@ -85,26 +85,61 @@ Send NICK and USER
     \n > .
     <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< end of "NICK bfbot\r\nUSER bfbot a :bfbot\r\n"
 
-Loop until we get a PRIVMSG with a channel to join
 >
 cell #0: working cell for iteration and such
 cell #1 stdin (pointer currently points here)
 [
-    PRIVMSG comes in like this: ":user PRIVMSG bfbot :message"
+    Messages come in like this: ":user PRIVMSG bfbot :message"
     >+[,<[-]++++++++++[>---<-]>--] Loop until a space (32) is read
     Check for P (80)
-    , < ++++++++++ [ > -------- <- ] [- zero working cell to 1]+ >
+    , < ++++++++++ [ > -------- <- ] [- set working cell to 1]+ >
     [ if (input != 'P')
         [ , ---------- ] Read to \n (10); also zeroes cell
         <->
-    ]<[ if (input == 'P')>
-        TEMPORARY DEBUG CODE
-        (74 79 73 78 32 35 98 111 116 119 97 114 13 10)
-        ++++++++++
-        [>+++++++>+++++++>+++++++>+++++++>+++>+++>+++++++++>+++++++++++>+++++++++++>+++++++++++>+++++++++>+++++++++++>+>+<<<<<<<<<<<<<<-]
-        >++++.>+++++++++.>+++.>++++++++.>++.>+++++.>++++++++.>+.>++++++.>+++++++++.>+++++++.>++++.>+++.>.
-        [,[-]+]
-        END DEBUG CODE
+    ]<[> if (input == 'P')
+        ,
+        Check for 'O' (73) PING
+        < ++++++++++ [>-------<-]>--- <working=1[-]+> Cell is zero if 'I'
+        [
+            Check for 'R' (82) PRIVMSG
+            NOT WORKING; WHY
+            --------- Subtract 9 more; cell is zero if 'R'
+            Use a second working cell at address 3: >[-]+<
+            [
+                Not 'R'
+                [ , ---------- ] Read to \n (10); also zeroes cell
+            >-<]>[ (move back to input address: <)
+                Handle 'R' (PRIVMSG)
+                Example PRIVMSG: :user PRIVMSG #channel :message
+                Example PRIVMSG: :user PRIVMSG destination :message
+                
+                Read remaining characters: I,V,M,S,G, ,
+                
+                Check for channel message (next character == '#' 35)
+                , >[-]++++++++++ [<--->-]<----- >[-]+<
+                [
+                    >> Move to new working memory
+                        Handle user private message
+                        Read until space (32): <[-]>[-]+[, <++++++++++ [>---<-]>-- ]
+                        , Read colon
+                        Command to join a channel is "J #channelname"; so check for a J (74)
+                        , <[-]++++++++++>[>-------<-]>---- <[-]+>
+                        [
+                            Not join; read to \n [ , ---------- ]
+                        >-<]>[
+                            Handle join command
+                            ,@
+                        ]<
+                    <<
+                >-<]>[<
+                    Handle channel message
+                    TEMPORARY: [ , ---------- ]
+                ]<
+            ]<
+        <->]<[>
+            Handle 'I' (PING)
+            
+        ]
     ]
     <[-]+ reset working cell to 1; loop
 ]
