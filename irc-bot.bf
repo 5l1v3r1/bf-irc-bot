@@ -90,63 +90,85 @@ cell #0: working cell for iteration and such
 cell #1 stdin (pointer currently points here)
 [
     Messages come in like this: ":user PRIVMSG bfbot :message"
-    , Read out one character, see if it's a ping
-    [-]+[,<[-]++++++++++[>---<-]>--] Loop until a space (32) is read
-    
-    Check for P (80)
-    , < ++++++++++ [ > -------- <- ] [- set working cell to 1]+ >
-    [ if (input != 'P')
-        [ , ---------- ] Read to \n (10); also zeroes cell
-        <->
-    ]<[> if (input == 'P')
-        Check for 'R' (82) PRIVMSG
-        , <[-]++++++++++[>--------<-]>-- cell is zero if 'R' <[-]+>
-        [
-            Not 'R'
+    , Read out one character; see if it's a 'P' (80)
+    <[-] ++++++++++ [>--------<-] [-]+>
+    [ Handle NOT a ping
+        [-]+[,<[-]++++++++++[>---<-]>--] Loop until a space (32) is read
+        
+        Check for P (80)
+        , <[-] ++++++++++ [ > -------- <- ] [- set working cell to 1]+ >
+        [ if (input != 'P')
             [ , ---------- ] Read to \n (10); also zeroes cell
-        <->]<[>
-            Handle PRIVMSG
-            Read remaining characters: I,V,M,S,G, ,
-            
-            Check for channel/user message ('#' = 35)
-            , <[-]++++++++++ [>---<-]>----- <[-]+>
+            <->
+        ]<[> if (input == 'P')
+            Check for 'R' (82) PRIVMSG
+            , <[-]++++++++++[>--------<-]>-- cell is zero if 'R' <[-]+>
             [
-                Handle user message
-                Read to space: <[-]> [,<++++++++++[>---<-]>--],
+                Not 'R'
+                [ , ---------- ] Read to \n (10); also zeroes cell
+            <->]<[>
+                Handle PRIVMSG
+                Read remaining characters: I,V,M,S,G, ,
                 
-                Check for 'J' 74
-                ,<++++++++++[>-------<-]>---- <[-]+>
+                Check for channel/user message ('#' = 35)
+                , <[-]++++++++++ [>---<-]>----- <[-]+>
                 [
-                    [-] (not J; ignore)
-                <->]<[>,
-                    Write JOIN command 74 79 73 78 32 (user text) 13 10
-                    <[-]++++++++++
-                    >[-]>[-]>[-]>[-]>[-]<<<<<
-                    [>+++++++ >+++++++ >+++++++ >+++++++ >+++ <<<<<-]
-                    >++++.
-                    >+++++++++.
-                    >+++.
-                    >++++++++.
-                    >++.
-                    <<<<<[-]>
+                    Handle user message
+                    Read to space: <[-]> [,<++++++++++[>---<-]>--],
                     
-                    Write user text:
-                    <[-]+[>
-                        ,------------- Subtract \r<[-]>
-                        [<+>+++++++++++++.[-]] Output if not \r
-                        <
-                    ]>
-                    Write \r\n
-                    [-]++++++++++.+++.
+                    Check for 'J' 74
+                    ,<++++++++++[>-------<-]>---- <[-]+>
+                    [
+                        [-] (not J; ignore)
+                    <->]<[>,
+                        Write JOIN command 74 79 73 78 32 (user text) 13 10
+                        <[-]++++++++++
+                        >[-]>[-]>[-]>[-]>[-]<<<<<
+                        [>+++++++ >+++++++ >+++++++ >+++++++ >+++ <<<<<-]
+                        >++++.
+                        >+++++++++.
+                        >+++.
+                        >++++++++.
+                        >++.
+                        <<<<<[-]>
+                        
+                        Write user text:
+                        <[-]+[>
+                            ,------------- Subtract \r<[-]>
+                            [<+>+++++++++++++.[-]] Output if not \r
+                            <
+                        ]>
+                        Write \r\n
+                        [-]++++++++++.+++.
+                    <[-]]>
+                    +[ , ---------- ]
+                <[-]>]<[>
+                    Channel message
+                    %channel%
+                    [ , ---------- ] TODO
                 <[-]]>
-                +[ , ---------- ]
-            <[-]>]<[>
-                Channel message
-                %channel%
-                [ , ---------- ] TODO
             <[-]]>
-        <[-]]>
-    ]>[-]+
+        ]>[-]+
+    <[-]>[-]]<[
+        Handle PING
+        ,,, Read out "ING "
+        Write PONG 80 79 78 71 32
+        [-]++++++++++[
+            >++++++++
+            >+++++++
+            >+++++++
+            >+++++++
+            >+++
+            <<<<<-
+        ]
+        >.
+        >+++++++++.
+        >++++++++.
+        >+.
+        >++.
+        <<<<<
+        [-]+[ ,. ---------- ] Write out the PING response
+    >[-]]+
     %***%
 ]
 
