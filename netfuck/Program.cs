@@ -145,7 +145,7 @@ namespace netfuck
                     case '&':
                         if (debug)
                         {
-                            var addr = code[codeIndex++];
+                            var addr = code[++codeIndex];
                             byte value;
                             if (addr == 'p') value = memory[pointer];
                             else value = memory[int.Parse(addr.ToString())];

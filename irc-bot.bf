@@ -90,6 +90,7 @@ cell #0: working cell for iteration and such
 cell #1 stdin (pointer currently points here)
 [
     Messages come in like this: ":user PRIVMSG bfbot :message"
+    , Read out one character, see if it's a ping
     [-]+[,<[-]++++++++++[>---<-]>--] Loop until a space (32) is read
     
     Check for P (80)
@@ -141,8 +142,7 @@ cell #1 stdin (pointer currently points here)
                         Write \r\n
                         [-]++++++++++.+++.
                     <[-]]>
-                                        
-                    +[ , ---------- ] TODO
+                    +[ , ---------- ]
                 <[-]>]<[>
                     Channel message
                     %channel%
@@ -150,8 +150,11 @@ cell #1 stdin (pointer currently points here)
                 <[-]]>
             <[-]]>
         <[-]>]<[>
+            %HANDLING PING%
             Handle 'I' (PING)
-            [ , ---------- ] TODO
+            ,,, Read out "NG "
+            Write PONG 80 79 78 71 31
+            [ ,. ---------- ] Write out the PING response
         ]
     ]>[-]+
     %***%
