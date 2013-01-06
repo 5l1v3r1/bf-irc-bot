@@ -33,4 +33,5 @@ A couple of simple C# programs are included.
 
 Current capabilities of the bot:
 
-* Connect to IRC. Ignore all responses from the server. Time out and die.
+* Connect to IRC, respond to PING and such
+* When PRIVMSGed with "J #channelname", it joins #channelname
