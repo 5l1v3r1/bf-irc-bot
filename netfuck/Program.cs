@@ -146,9 +146,13 @@ namespace netfuck
                         if (debug)
                         {
                             var addr = code[++codeIndex];
-                            byte value;
-                            if (addr == 'p') value = memory[pointer];
+                            ushort value;
+                            if (addr == 'v') value = memory[pointer];
+                            else if (addr == 'p') value = pointer;
                             else value = memory[int.Parse(addr.ToString())];
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(value);
+                            Console.ResetColor();
                         }
                         break;
                 }

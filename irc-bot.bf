@@ -88,7 +88,7 @@ Send NICK and USER
 >
 cell #0: working cell for iteration and such
 cell #1 stdin (pointer currently points here)
-[
+[&p
     Messages come in like this: ":user PRIVMSG bfbot :message"
     , Read out one character; see if it's a 'P' (80)
     <[-] ++++++++++ [>--------<-] [-]+>
@@ -148,7 +148,7 @@ cell #1 stdin (pointer currently points here)
                     [ , ---------- ] TODO
                 <[-]]>
             <[-]]>
-        ]>[-]+
+        <[-]]>[-]+
     <[-]>[-]]<[
         Handle PING
         ,,, Read out "ING "
@@ -168,7 +168,7 @@ cell #1 stdin (pointer currently points here)
         >++.
         <<<<<
         [-]+[ ,. ---------- ] Write out the PING response
-    >[-]]+
+    [-]]>+
     %***%
 ]
 
