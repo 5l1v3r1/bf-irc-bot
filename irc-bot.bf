@@ -99,63 +99,63 @@ cell #1 stdin (pointer currently points here)
         [ , ---------- ] Read to \n (10); also zeroes cell
         <->
     ]<[> if (input == 'P')
-        , Check for 'I' (73) PING
-        < [-]++++++++++ [>-------<-]>--- <working=1+> Cell is zero if 'I'
+        Check for 'R' (82) PRIVMSG
+        , <[-]++++++++++[>--------<-]>-- cell is zero if 'R' <[-]+>
         [
-            Check for 'R' (82) PRIVMSG
-            --------- Subtract 9 more; cell is zero if 'R' <[-]+>
+            Not 'R'
+            [ , ---------- ] Read to \n (10); also zeroes cell
+        <->]<[>
+            Handle PRIVMSG
+            Read remaining characters: I,V,M,S,G, ,
+            
+            Check for channel/user message ('#' = 35)
+            , <[-]++++++++++ [>---<-]>----- <[-]+>
             [
-                Not 'R'
-                [ , ---------- ] Read to \n (10); also zeroes cell
-            <->]<[>
-                Handle PRIVMSG
-                Read remaining characters: I,V,M,S,G, ,
+                Handle user message
+                Read to space: <[-]> [,<++++++++++[>---<-]>--],
                 
-                Check for channel/user message ('#' = 35)
-                , <[-]++++++++++ [>---<-]>----- <[-]+>
+                Check for 'J' 74
+                ,<++++++++++[>-------<-]>---- <[-]+>
                 [
-                    Handle user message
-                    Read to space: <[-]> [,<++++++++++[>---<-]>--],
+                    [-] (not J; ignore)
+                <->]<[>,
+                    Write JOIN command 74 79 73 78 32 (user text) 13 10
+                    <[-]++++++++++
+                    >[-]>[-]>[-]>[-]>[-]<<<<<
+                    [>+++++++ >+++++++ >+++++++ >+++++++ >+++ <<<<<-]
+                    >++++.
+                    >+++++++++.
+                    >+++.
+                    >++++++++.
+                    >++.
+                    <<<<<[-]>
                     
-                    Check for 'J' 74
-                    ,<++++++++++[>-------<-]>---- <[-]+>
-                    [
-                        [-] (not J; ignore)
-                    <->]<[>,
-                        Write JOIN command 74 79 73 78 32 (user text) 13 10
-                        <[-]++++++++++
-                        >[-]>[-]>[-]>[-]>[-]<<<<<
-                        [>+++++++ >+++++++ >+++++++ >+++++++ >+++ <<<<<-]
-                        >++++.
-                        >+++++++++.
-                        >+++.
-                        >++++++++.
-                        >++.
-                        <<<<<[-]>
-                        
-                        Write user text:
-                        <[-]+[>
-                            ,------------- Subtract \r<[-]>
-                            [<+>+++++++++++++.[-]] Output if not \r
-                            <
-                        ]>
-                        Write \r\n
-                        [-]++++++++++.+++.
-                    <[-]]>
-                    +[ , ---------- ]
-                <[-]>]<[>
-                    Channel message
-                    %channel%
-                    [ , ---------- ] TODO
+                    Write user text:
+                    <[-]+[>
+                        ,------------- Subtract \r<[-]>
+                        [<+>+++++++++++++.[-]] Output if not \r
+                        <
+                    ]>
+                    Write \r\n
+                    [-]++++++++++.+++.
                 <[-]]>
+                +[ , ---------- ]
+            <[-]>]<[>
+                Channel message
+                %channel%
+                [ , ---------- ] TODO
             <[-]]>
-        <[-]>]<[>
-            %HANDLING PING%
-            Handle 'I' (PING)
-            ,,, Read out "NG "
-            Write PONG 80 79 78 71 31
-            [ ,. ---------- ] Write out the PING response
-        ]
+        <[-]]>
     ]>[-]+
     %***%
 ]
+
+
+
+Some stuff that never gets executed; included for reference:
+
+%HANDLING PING%
+Handle 'I' (PING)
+,,, Read out "NG "
+Write PONG 80 79 78 71 31
+[ ,. ---------- ] Write out the PING response
