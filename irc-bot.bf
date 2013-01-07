@@ -120,7 +120,7 @@ cell #1 stdin (pointer currently points here)
                     ,<++++++++++[>-------<-]>---- <[-]+>
                     [
                         [-] (not J; ignore)
-                    <->]<[>,
+                    <->]<[>,                    
                         Write JOIN command 74 79 73 78 32 (user text) 13 10
                         <[-]++++++++++
                         >[-]>[-]>[-]>[-]>[-]<<<<<
@@ -137,7 +137,7 @@ cell #1 stdin (pointer currently points here)
                             ,------------- Subtract \r<[-]>
                             [<+>+++++++++++++.[-]] Output if not \r
                             <
-                        ]>                                                      98 111 116 119 97 114
+                        ]>
                         Write \r\n
                         [-]++++++++++.+++.
                     <[-]]>
@@ -210,13 +210,3 @@ cell #1 stdin (pointer currently points here)
         [-]+[ ,. ---------- ] Write out the PING response
     [-]]>+
 ]
-
-
-
-Some stuff that never gets executed; included for reference:
-
-%HANDLING PING%
-Handle 'I' (PING)
-,,, Read out "NG "
-Write PONG 80 79 78 71 31
-[ ,. ---------- ] Write out the PING response
