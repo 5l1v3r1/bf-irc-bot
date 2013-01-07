@@ -1,5 +1,7 @@
 # IRC-BF
 
+### [Click here if you just want to read the code](https://github.com/SirCmpwn/bf-irc-bot/blob/master/irc-bot.bf)
+
 An IRC bot written in brainfuck.
 
 ## Usage
