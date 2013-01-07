@@ -39,12 +39,12 @@ namespace netfuck
                     Console.WriteLine("Current instruction: " + code[codeIndex] + " (source index " + codeIndex + ")");
                     Console.WriteLine("Memory pointer: " + pointer);
                     Console.Write("Memory dump: ");
-                    for (ushort i = (ushort)(pointer - 4); i < pointer + 5; i++)
+                    for (int i = -5; i <= 5; i++)
                     {
-                        if (pointer == i)
-                            Console.Write("[" + memory[i] + "] ");
+                        if (i == 0)
+                            Console.Write("[" + memory[(ushort)(pointer + i)] + "] ");
                         else
-                            Console.Write(memory[i] + " ");
+                            Console.Write(memory[(ushort)(pointer + i)] + " ");
                     }
                     var command = "";
                     while (command != "continue")

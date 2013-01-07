@@ -88,7 +88,7 @@ Send NICK and USER
 >
 cell #0: working cell for iteration and such
 cell #1 stdin (pointer currently points here)
-[&p
+[
     Messages come in like this: ":user PRIVMSG bfbot :message"
     , Read out one character; see if it's a 'P' (80)
     <[-] ++++++++++ [>--------<-] [-]+>
@@ -137,15 +137,55 @@ cell #1 stdin (pointer currently points here)
                             ,------------- Subtract \r<[-]>
                             [<+>+++++++++++++.[-]] Output if not \r
                             <
-                        ]>
+                        ]>                                                      98 111 116 119 97 114
                         Write \r\n
                         [-]++++++++++.+++.
                     <[-]]>
                     +[ , ---------- ]
                 <[-]>]<[>
                     Channel message
-                    %channel%
-                    [ , ---------- ] TODO
+                    Read channel name into buffer (a zero on each side)
+                    [-]>[-]+<
+                    +[>,+
+                        Copy value into next two cells for comparison
+                        >[-]>[-]<<
+                        [>+>+<<-]>[<+>-]>
+                        Pointer is at third cell; middle cell is zero; first cell and third cell are read value
+                        Subtract space (32) using middle cell as working cell <++++++++++[>---<-]>---<+> (note: we subtract 33 because the whole buffer is incremented)
+                        [<->[-]]
+                        <[
+                            Handle space
+                            <[-]>
+                        [-]]<
+                    ]
+                    <-[<-]
+                    , Read and discard
+                    
+                    , Check for control character '$' 36
+                    <[-]++++++++++[>---<-]>------<+>
+                    [ [-]+[ , ---------- ] <->]
+                    <[>
+                        Send 'PRIVMSG #' 80 82 73 86 77 83 71 32 35 without screwing up the channel name buffer
+                        [-]<[-]++++++++++[>++++++++<-]>.
+                        [-]<[-]++++++++++[>++++++++<-]>++.
+                        [-]<[-]++++++++++[>+++++++<-]>+++.
+                        [-]<[-]++++++++++[>++++++++<-]>++++++.
+                        [-]<[-]++++++++++[>+++++++<-]>+++++++.
+                        [-]<[-]++++++++++[>++++++++<-]>+++.
+                        [-]<[-]++++++++++[>+++++++<-]>+.
+                        [-]<[-]++++++++++[>+++<-]>++.
+                        [-]<[-]++++++++++[>+++<-]>+++++.
+                        
+                        Send the channel name from our buffer
+                        [-]>[.>]<[<]
+                        
+                        Send a space; then a colon (58)
+                        [-]<[-]++++++++++[>+++<-]>++.
+                        [-]<[-]++++++++++[>++++++<-]>--.
+                        
+                        Finally; send the user's message
+                        [-]+[ ,. ---------- ]
+                    <[-]]>
                 <[-]]>
             <[-]]>
         <[-]]>[-]+
@@ -169,7 +209,6 @@ cell #1 stdin (pointer currently points here)
         <<<<<
         [-]+[ ,. ---------- ] Write out the PING response
     [-]]>+
-    %***%
 ]
 
 
