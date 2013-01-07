@@ -185,10 +185,10 @@ cell #1 stdin (pointer currently points here)
                         
                         Finally; send the user's message
                         [-]+[ ,. ---------- ]
-                    <[-]]>
-                <[-]]>
-            <[-]]>
-        <[-]]>[-]+
+                    <[-]]
+                [-]]
+            [-]
+        [-]]>[-]+
     <[-]>[-]]<[
         Handle PING
         ,,, Read out "ING "
