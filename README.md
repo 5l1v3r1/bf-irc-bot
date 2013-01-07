@@ -35,3 +35,4 @@ Current capabilities of the bot:
 
 * Connect to IRC, respond to PING and such
 * When PRIVMSGed with "J #channelname", it joins #channelname
+* In-channel, use "$message" to have "message" echoed back to you
