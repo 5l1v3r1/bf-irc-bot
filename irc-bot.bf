@@ -1,40 +1,36 @@
 Brainfuck IRC bot
 * Comments use ; in place of periods or commas as punctuation
 * Meant to operate on 8 bit unsigned memory
-* Expects a good amount of memory; I use 0x10000 bytes; smaller is probably fine
+* Uses a minimum of 35 bytes of memory; more may be needed depending on the length of channel names it works in
 * Expects stdin to block until data is available
 * If you use netfuck; it'd be useful to know that debug mode outputs every character read from the remote to the console
 
 Send NICK and USER
+++++++++++
+[
+    "NICK "  >++++++++>+++++++>+++++++>+++++++>+++
+    "bfbot"  >++++++++++>++++++++++>++++++++++>+++++++++++>+++++++++++
+    "\r\n"   >+>+
+    "USER "  >++++++++>++++++++>+++++++>++++++++>+++
+    "bfbot " >++++++++++>++++++++++>++++++++++>+++++++++++>+++++++++++>+++
+    "a a :"  >+++++++++>+++>+++++++++>+++>+++++
+    "bfbot"  >++++++++++>++++++++++>++++++++++>+++++++++++>+++++++++++
+    "\r\n"   >+>+
+    <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-
+]
+"NICK "  >--.>+++.>---.>+++++.>++.
+"bfbot"  >--.>++.>--.>+.>++++++.
+"\r\n"   >+++.>.
+"USER "  >+++++.>+++.>-.>++.>++.
+"bfbot " >--.>++.>--.>+.>++++++.>++.
+"a a :"  >+++++++.>++.> +++++++.>++.>++++++++.
+"bfbot " >--.>++.>--.>+.>++++++.
+"\r\n"   >+++.>.
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-"NICK bfbot\r\nUSER bfbot a a :bfbot\r\n" (78 73 67 75 32 98 102 98 111 116 13 10 85 83 69 82 32 98 102 98 111 116 32 97 32 58 98 102 98 111 116)
-    ++++++++++
-    [
-        "NICK "  >++++++++>+++++++>+++++++>+++++++>+++
-        "bfbot"  >++++++++++>++++++++++>++++++++++>+++++++++++>+++++++++++
-        "\r\n"   >+>+
-        "USER "  >++++++++>++++++++>+++++++>++++++++>+++
-        "bfbot " >++++++++++>++++++++++>++++++++++>+++++++++++>+++++++++++>+++
-        "a a :"  >+++++++++>+++>+++++++++>+++>+++++
-        "bfbot"  >++++++++++>++++++++++>++++++++++>+++++++++++>+++++++++++
-        "\r\n"   >+>+
-        <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-
-    ]
-    "NICK "  >--.>+++.>---.>+++++.>++.
-    "bfbot"  >--.>++.>--.>+.>++++++.
-    "\r\n"   >+++.>.
-    "USER "  >+++++.>+++.>-.>++.>++.
-    "bfbot " >--.>++.>--.>+.>++++++.>++.
-    "a a :"  >+++++++.>++.> +++++++.>++.>++++++++.
-    "bfbot " >--.>++.>--.>+.>++++++.
-    "\r\n"   >+++.>.
-    <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
->
 cell #0: working cell for iteration and such
 cell #1 stdin (pointer currently points here)
 [
-    Messages come in like this: ":user PRIVMSG bfbot :message"
     , Read out one character; see if it's a 'P' (80)
     <[-] ++++++++++ [>--------<-] [-]+>
     [ Handle NOT a ping
@@ -122,7 +118,7 @@ cell #1 stdin (pointer currently points here)
                         
                         Send a space; then a colon (58)
                         [-]<[-]++++++++++[>+++<-]>++.
-                        [-]<[-]++++++++++[>++++++<-]>--.
+                        [-]<++++++++++[>++++++<-]>--.
                         
                         Finally; send the user's message
                         [-]+[ ,. ---------- ]
@@ -142,5 +138,5 @@ cell #1 stdin (pointer currently points here)
             <<<<<-
         ]>.>-.>--.>+.<<<<<
         [-]+[ ,. ---------- ] Write out the PING response
-    [-]]>+
+    ]>+
 ]
