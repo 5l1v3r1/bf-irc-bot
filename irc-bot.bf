@@ -124,19 +124,14 @@ cell #1 stdin (pointer currently points here)
                         [-]+[ ,. ---------- ]
                     <[-]]
                 [-]]
-            [-]
+            [-]]
         [-]]>[-]+
     <[-]>[-]]<[
         Handle PING
-        ,,, Read out "ING" (optimization: we steal the space from this message later on; so we needn't write it)
-        Write PONG 80 79 78 71 32
-        [-]++++++++++[
-            >++++++++
-            >++++++++
-            >++++++++
-            >+++++++
-            <<<<<-
-        ]>.>-.>--.>+.<<<<<
+        , Read out "I" (optimization: we steal the characters from this message later on; so we needn't write it)
+        Write PO 80 79
+        [-]++++++++++[>++++++++<-]
+        >.-.<
         [-]+[ ,. ---------- ] Write out the PING response
     ]>+
 ]
