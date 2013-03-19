@@ -19,6 +19,9 @@ For example, to connect the bot to freenode, use this:
 
     netfuck irc.freenode.net:6667 irc-bot.bf
 
+If you use netfuck on Linux or Mac, you need to install mono and prefacae every command with `mono`, for
+instance, `mono netfuck.exe hostname:port path/to/code.bf`.
+
 Then, to get it into your favorite channel, use this from IRC:
 
     /msg bfbot J #channelname
