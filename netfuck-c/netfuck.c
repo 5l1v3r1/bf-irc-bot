@@ -49,9 +49,14 @@ int main(int argc, char** argv) { // Usage: netfuck file.bf endpoint:port
     *port++ = 0;
     for (int i = 0; i < strlen(port); i++) {
         if (port[i] < '0' || port[i] > '9') {
-            printf("Invalid port specified. Must be an integer.\n");
+            printf("Invalid port specified. Must be an integer between 0 and 65535.\n");
             return 1;
         }
+    }
+    i = atoi(port);
+    if (i < 0 || i > 0xFFFF) {
+        printf("Invalid port specified. Must be an integer between 0 and 65535.\n");
+        return 1;
     }
     struct addrinfo *result, *server, hints;
     memset(&hints, 0, sizeof(struct addrinfo));
