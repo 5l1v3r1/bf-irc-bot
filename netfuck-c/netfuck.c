@@ -68,6 +68,10 @@ int main(int argc, char** argv) { // Usage: netfuck file.bf endpoint:port
         if (server->ai_family == AF_INET)
             break;
     }
+    if (server == NULL) {
+        printf("Unable to resolve %s\n", argv[2]);
+        return 1;
+    }
     
     // Open socket
     int sockfd = socket(server->ai_family, server->ai_socktype, server->ai_protocol);
@@ -80,6 +84,7 @@ int main(int argc, char** argv) { // Usage: netfuck file.bf endpoint:port
         return 1;
     }
     
+    char c;
     while (executable_index < executable_length) {
         switch (executable[executable_index]) {
             case '>':
