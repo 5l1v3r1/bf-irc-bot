@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <netdb.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 
@@ -13,9 +14,9 @@ int pointer, executable_length, executable_index;
 int seek_next();
 int seek_prev();
 
-int main(int argc, char** argv) { // netfuck file.bf endpoint:port
+int main(int argc, char** argv) { // Usage: netfuck file.bf endpoint:port
     if (argc != 3) {
-        printf("Incorrect usage.\n");
+        printf("Incorrect usage. Try ./netfuck file.bf endpoint:port\n");
         return 1;
     }
     
@@ -37,6 +38,48 @@ int main(int argc, char** argv) { // netfuck file.bf endpoint:port
     pointer = 0;
     executable_index = 0;
     
+    char* host = (char*)malloc(strlen(argv[2]));
+    strcpy(host, argv[2]);
+    char* port = host;
+    while (*port && *port != ':') port++;
+    if (!*port) {
+        printf("Invalid endpoint specified. Must be in address:port format.\n");
+        return 1;
+    }
+    *port++ = 0;
+    for (int i = 0; i < strlen(port); i++) {
+        if (port[i] < '0' || port[i] > '9') {
+            printf("Invalid port specified. Must be an integer.\n");
+            return 1;
+        }
+    }
+    struct addrinfo *result, *server, hints;
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_family = AF_INET; // TODO: IPv6
+    hints.ai_socktype = SOCK_DGRAM;
+    if (getaddrinfo(host, port, &hints, &result)) {
+        printf("Error looking up %s.\n", host);
+        return 1;
+    }
+    
+    server = result;
+    while (server != NULL) {
+        server = server->ai_next;
+        if (server->ai_family == AF_INET)
+            break;
+    }
+    
+    // Open socket
+    int sockfd = socket(server->ai_family, server->ai_socktype, server->ai_protocol);
+    if (sockfd < 0) {
+        printf("Failed to create socket.\n");
+        return 1;
+    }
+    if (connect(sockfd, server->ai_addr, server->ai_addrlen) < 0) {
+        printf("Failed to connect to %s.\n", argv[2]);
+        return 1;
+    }
+    
     while (executable_index < executable_length) {
         switch (executable[executable_index]) {
             case '>':
@@ -52,10 +95,16 @@ int main(int argc, char** argv) { // netfuck file.bf endpoint:port
                 memory[pointer]--;
                 break;
             case '.':
+                send(sockfd, (void*)(memory + pointer), sizeof(char), 0);
                 printf("%c", memory[pointer]);
                 break;
             case ',':
-                // ...
+                if (!recv(sockfd, (void*)&c, sizeof(char), 0)) {
+                    printf("The remote host closed the connection.\n");
+                    return 1;
+                }
+                memory[pointer] = c;
+                printf("%c", c);
                 break;
             case '[':
                 if (!memory[pointer]) {
@@ -77,8 +126,11 @@ int main(int argc, char** argv) { // netfuck file.bf endpoint:port
         executable_index++;
     }
     
+    shutdown(sockfd, SHUT_RDWR);
     free(memory);
     free(executable);
+    free(host);
+    freeaddrinfo(result);
 }
 
 int seek_next() {
