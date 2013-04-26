@@ -44,18 +44,27 @@ int main(int argc, char** argv) { // Usage: netfuck file.bf endpoint:port
     while (*port && *port != ':') port++;
     if (!*port) {
         printf("Invalid endpoint specified. Must be in address:port format.\n");
+        free(executable);
+        free(memory);
+        free(host);
         return 1;
     }
     *port++ = 0;
     for (int i = 0; i < strlen(port); i++) {
         if (port[i] < '0' || port[i] > '9') {
             printf("Invalid port specified. Must be an integer between 0 and 65535.\n");
+            free(executable);
+            free(memory);
+            free(host);
             return 1;
         }
     }
     i = atoi(port);
     if (i < 0 || i > 0xFFFF) {
         printf("Invalid port specified. Must be an integer between 0 and 65535.\n");
+        free(executable);
+        free(memory);
+        free(host);
         return 1;
     }
     struct addrinfo *result, *server, hints;
@@ -64,6 +73,9 @@ int main(int argc, char** argv) { // Usage: netfuck file.bf endpoint:port
     hints.ai_socktype = SOCK_DGRAM;
     if (getaddrinfo(host, port, &hints, &result)) {
         printf("Error looking up %s.\n", host);
+        free(executable);
+        free(memory);
+        free(host);
         return 1;
     }
     
@@ -75,6 +87,10 @@ int main(int argc, char** argv) { // Usage: netfuck file.bf endpoint:port
     }
     if (server == NULL) {
         printf("Unable to resolve %s\n", argv[2]);
+        free(executable);
+        free(memory);
+        free(host);
+        freeaddrinfo(result);
         return 1;
     }
     
@@ -82,10 +98,18 @@ int main(int argc, char** argv) { // Usage: netfuck file.bf endpoint:port
     int sockfd = socket(server->ai_family, server->ai_socktype, server->ai_protocol);
     if (sockfd < 0) {
         printf("Failed to create socket.\n");
+        free(executable);
+        free(memory);
+        free(host);
+        freeaddrinfo(result);
         return 1;
     }
     if (connect(sockfd, server->ai_addr, server->ai_addrlen) < 0) {
         printf("Failed to connect to %s.\n", argv[2]);
+        free(executable);
+        free(memory);
+        free(host);
+        freeaddrinfo(result);
         return 1;
     }
     
@@ -120,6 +144,11 @@ int main(int argc, char** argv) { // Usage: netfuck file.bf endpoint:port
                 if (!memory[pointer]) {
                     if (!seek_next()) {
                         printf("Error: Unmatched '['\n");
+                        shutdown(sockfd, SHUT_RDWR);
+                        free(memory);
+                        free(executable);
+                        free(host);
+                        freeaddrinfo(result);
                         return 1;
                     }
                 }
@@ -128,6 +157,11 @@ int main(int argc, char** argv) { // Usage: netfuck file.bf endpoint:port
                 if (memory[pointer]) {
                     if (!seek_prev()) {
                         printf("Error: Unmatched ']'\n");
+                        shutdown(sockfd, SHUT_RDWR);
+                        free(memory);
+                        free(executable);
+                        free(host);
+                        freeaddrinfo(result);
                         return 1;
                     }
                 }
